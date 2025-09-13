@@ -1,0 +1,91 @@
+# Windows-Compatible Requirements for TTS Backend
+# All packages have pre-compiled wheels or pure Python implementations
+
+# Core FastAPI and server dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+aiofiles==23.2.1
+
+# AI/ML Core Libraries (Windows wheels available)
+torch>=2.1.0 --index-url https://download.pytorch.org/whl/cpu
+torchaudio>=2.1.0 --index-url https://download.pytorch.org/whl/cpu
+transformers[audio]==4.35.0
+accelerate==0.24.1
+numpy==1.24.3
+scipy==1.11.3
+
+# TTS Libraries (Windows-compatible alternatives)
+# Removed: TTS==0.22.0 (compilation required)
+# Removed: coqui-tts==0.22.0 (compilation required)
+gtts==2.5.1                    # Google TTS - pure Python
+edge-tts==6.1.10              # Microsoft Edge TTS - excellent quality
+azure-cognitiveservices-speech==1.34.1  # Azure TTS (optional)
+pyttsx3==2.90                 # Keep as fallback, but fix timeout issues
+
+# Audio Processing (Windows wheels available)
+librosa==0.10.1
+soundfile==0.12.1
+pydub==0.25.1
+audioread==3.0.1              # Fixes m4a compatibility issues
+
+# Voice Processing (Resemblyzer alternatives - no compilation needed)
+# Removed: resemblyzer==0.1.1 (requires Visual C++)
+# Removed: webrtcvad==2.0.10 (requires compilation)
+speechbrain==0.5.16           # Pre-compiled wheels, speaker verification
+pyannote.audio==3.1.1        # Pure Python, speaker diarization
+
+# Speech Recognition (Windows-compatible)
+SpeechRecognition==3.10.0    # Pure Python with multiple backends
+whisper-cpp-python==0.1.2    # Whisper with Windows wheels
+faster-whisper==0.10.0       # Optimized Whisper
+openai-whisper==20231117     # Original Whisper (now has Windows wheels)
+
+# Voice Effects and Changing (Windows wheels)
+pedalboard==0.7.4            # Spotify's audio effects library
+pyrubberband==0.3.0          # Pitch/time manipulation
+parselmouth==0.4.3           # Voice analysis and manipulation
+
+# Video Processing (Windows wheels available)
+opencv-python==4.8.1.78
+ffmpeg-python==0.2.0
+moviepy==1.0.3
+
+# Face processing alternatives (avoiding dlib compilation issues)
+# Removed: dlib==19.24.2 (requires compilation)
+# Removed: face-recognition==1.3.0 (depends on dlib)
+mediapipe==0.10.7            # Google's ML solutions - Windows wheels
+insightface==0.7.3           # Face analysis with Windows wheels
+
+# Database and Storage
+sqlalchemy==2.0.23
+alembic==1.12.1
+redis==5.0.1
+
+# Authentication and Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+
+# Monitoring and Logging
+prometheus-client==0.19.0
+structlog==23.2.0
+
+# Development and Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.10.1
+isort==5.12.0
+mypy==1.7.0
+
+# Additional utilities
+requests==2.31.0
+httpx==0.25.2
+pillow==10.1.0
+matplotlib==3.8.2
+seaborn==0.13.0
+psutil==5.9.6                # For memory monitoring
+
+# Optional cloud TTS services (uncomment as needed)
+# google-cloud-texttospeech==2.16.3
+# boto3==1.34.0  # For AWS Polly

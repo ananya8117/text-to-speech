@@ -21,6 +21,7 @@ export default function Navbar() {
     { href: "/tts", label: "TTS", icon: "🗣️" },
     { href: "/transcribe", label: "Transcribe", icon: "📝" },
     { href: "/clone", label: "Voice Clone", icon: "🎤" },
+    { href: "/chat", label: "AI Chat", icon: "💬" },
     { href: "/voices", label: "My Voices", icon: "🎵" },
     { href: "/dubbing", label: "Dubbing", icon: "🎬" },
     { href: "/privacy", label: "Privacy", icon: "🔐" },

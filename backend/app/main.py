@@ -11,6 +11,7 @@ import json
 
 from app.core.config import settings
 from app.api.tts import router as tts_router
+from app.api.tts_chatterbox import router as tts_chatterbox_router
 from app.api.voice_clone import router as voice_clone_router
 from app.api.dubbing import router as dubbing_router
 from app.api.privacy import router as privacy_router
@@ -110,13 +111,16 @@ async def system_info():
     }
 
 # Include API routers
-app.include_router(tts_router, prefix="/api/tts", tags=["Text-to-Speech"])
+# Primary Chatterbox TTS endpoints (lightweight, production-ready)
+app.include_router(tts_chatterbox_router, prefix="/api/tts", tags=["Chatterbox TTS"])
+
+# Legacy TTS endpoints (kept for backward compatibility)
+app.include_router(tts_router, prefix="/api/tts/legacy", tags=["Legacy TTS"])
 app.include_router(voice_clone_router, prefix="/api/voice-clone", tags=["Voice Cloning"])
 app.include_router(stt_router, prefix="/api/stt", tags=["Speech-to-Text"])
 app.include_router(dubbing_router, prefix="/api/dubbing", tags=["Video Dubbing"])
 app.include_router(privacy_router, prefix="/api/privacy", tags=["Privacy Mode"])
 app.include_router(voice_effects_router, prefix="/api/voice-effects", tags=["Voice Effects"])
-# app.include_router(stt_router, prefix="/api/speech-to-text", tags=["Speech-to-Text"])  # Temporarily disabled
 
 # Root endpoint
 @app.get("/")

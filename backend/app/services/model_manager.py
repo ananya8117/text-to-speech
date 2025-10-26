@@ -133,48 +133,66 @@ class ModelManager:
         logger.info("✅ Core models initialized successfully!")
     
     async def _load_tts_model(self):
-        """Load the primary TTS model"""
+        """Load the primary TTS model - Chatterbox TTS"""
         model_name = "tts"
         if model_name in self.models:
             return self.models[model_name]
-        
-        logger.info("📥 Loading TTS model...")
+
+        logger.info("📥 Loading Chatterbox TTS model...")
         try:
-            # Try to load actual TTS model first
-            from TTS.api import TTS
-            
-            # Use YourTTS for multilingual and voice cloning support
-            model_path = "tts_models/multilingual/multi-dataset/your_tts"
-            tts_model = TTS(model_name=model_path).to(self.device)
-            
+            # Try to load Chatterbox TTS - production-grade open source TTS
+            from chatterbox.tts import ChatterboxTTS
+
+            # Load Chatterbox model (supports CPU and GPU)
+            # For 8GB RAM, we'll use CPU mode to avoid GPU memory issues
+            device = "cpu" if not settings.USE_GPU else str(self.device)
+
+            logger.info(f"🔧 Loading Chatterbox on device: {device}")
+            tts_model = ChatterboxTTS.from_pretrained(device=device)
+
             self.models[model_name] = tts_model
             self.model_status[model_name] = True
-            
-            logger.info("✅ TTS model loaded successfully!")
+
+            logger.info("✅ Chatterbox TTS model loaded successfully!")
+            logger.info("📋 Features: Zero-shot voice cloning, Emotion control, Multilingual")
             return tts_model
-            
-        except ImportError:
-            logger.info("🔄 TTS library not found, trying pyttsx3...")
+
+        except ImportError as e:
+            logger.warning(f"⚠️ Chatterbox TTS not installed: {e}")
+            logger.info("🔄 Trying fallback TTS options...")
+
             try:
-                # Try pyttsx3 for basic TTS
+                # Try pyttsx3 for basic TTS as fallback
                 import pyttsx3
                 tts_engine = RealTTSModel()
                 self.models[model_name] = tts_engine
                 self.model_status[model_name] = True
-                logger.info("✅ pyttsx3 TTS model loaded successfully!")
+                logger.info("✅ pyttsx3 TTS model loaded as fallback!")
                 return tts_engine
             except ImportError:
-                logger.info("📝 No TTS libraries installed, using mock model for demo")
+                logger.warning("📝 No TTS libraries installed, using mock model for demo")
                 # Create a mock TTS model for demonstration
                 mock_tts = MockTTSModel()
                 self.models[model_name] = mock_tts
                 self.model_status[model_name] = True
                 logger.info("✅ Mock TTS model loaded for demo!")
                 return mock_tts
+
         except Exception as e:
-            logger.error(f"❌ Failed to load TTS model: {e}")
-            self.model_status[model_name] = False
-            return None
+            logger.error(f"❌ Failed to load Chatterbox TTS model: {e}")
+            logger.info("🔄 Attempting fallback to pyttsx3...")
+
+            try:
+                import pyttsx3
+                tts_engine = RealTTSModel()
+                self.models[model_name] = tts_engine
+                self.model_status[model_name] = True
+                logger.info("✅ Fallback pyttsx3 model loaded!")
+                return tts_engine
+            except:
+                logger.error("❌ All TTS models failed to load")
+                self.model_status[model_name] = False
+                return None
     
     async def _load_voice_encoder(self):
         """Load voice encoder for speaker embedding extraction"""
